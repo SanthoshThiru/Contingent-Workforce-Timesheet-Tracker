@@ -7,6 +7,7 @@ import com.contingentworkforce.dto.timesheet.TimesheetResponse;
 import com.contingentworkforce.entity.*;
 import com.contingentworkforce.enums.ApprovalStatus;
 import com.contingentworkforce.enums.EntityType;
+import com.contingentworkforce.enums.MilestoneStatus;
 import com.contingentworkforce.enums.NotificationType;
 import com.contingentworkforce.enums.TimesheetStatus;
 import com.contingentworkforce.exception.AccessDeniedException;
@@ -39,6 +40,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class TimesheetServiceImpl implements TimesheetService {
 
     private final TimesheetRepository timesheetRepository;
@@ -144,6 +146,10 @@ public class TimesheetServiceImpl implements TimesheetService {
         timesheet.setBreakHours(breakH);
         timesheet.setTotalHours(totalHours);
         timesheet.setDescription(request.getDescription());
+        if (request.getMilestoneId() != null) {
+            Milestone milestone = milestoneRepository.findById(request.getMilestoneId()).orElse(null);
+            timesheet.setMilestone(milestone);
+        }
         // If it was rejected, editing moves it back to DRAFT
         if (timesheet.getStatus() == TimesheetStatus.REJECTED) {
             timesheet.setStatus(TimesheetStatus.DRAFT);
@@ -268,6 +274,26 @@ public class TimesheetServiceImpl implements TimesheetService {
         timesheet.setApprovedAt(LocalDateTime.now());
         timesheet.setApprovedBy(approver);
         Timesheet updated = timesheetRepository.save(timesheet);
+
+        // If timesheet specifies a milestone, mark that milestone as COMPLETED upon timesheet approval
+        if (timesheet.getMilestone() != null) {
+            Milestone milestone = timesheet.getMilestone();
+            milestone.setStatus(MilestoneStatus.COMPLETED);
+            milestone.setCompletionPercentage(100);
+            milestone.setApprovedBy(approver);
+            milestone.setApprovedAt(LocalDateTime.now());
+            milestoneRepository.save(milestone);
+
+            // Notify Project Manager that milestone has been marked as completed via approved timesheet
+            if (milestone.getProject() != null && milestone.getProject().getManager() != null) {
+                notificationService.createNotification(
+                        milestone.getProject().getManager(),
+                        "Milestone Completed via Approved Timesheet",
+                        String.format("Milestone '%s' for project '%s' has been marked as COMPLETED following vendor approval of timesheet on %s.",
+                                milestone.getMilestoneName(), milestone.getProject().getProjectName(), timesheet.getWorkDate()),
+                        NotificationType.MILESTONE);
+            }
+        }
 
         // Record Approval History
         approvalService.recordApproval(EntityType.TIMESHEET, timesheet.getId(), timesheet.getContractor().getUser(),

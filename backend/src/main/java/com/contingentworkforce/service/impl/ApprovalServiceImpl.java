@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class ApprovalServiceImpl implements ApprovalService {
 
     private final ApprovalRepository approvalRepository;

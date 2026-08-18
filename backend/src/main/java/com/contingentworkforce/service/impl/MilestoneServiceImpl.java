@@ -44,6 +44,7 @@ import com.contingentworkforce.repository.ProjectMemberRepository;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class MilestoneServiceImpl implements MilestoneService {
 
     private final MilestoneRepository milestoneRepository;

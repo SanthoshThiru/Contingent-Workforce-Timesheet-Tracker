@@ -19,6 +19,7 @@ import java.time.LocalTime;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class DataInitializer implements CommandLineRunner {
 
     private final UserRepository userRepository;

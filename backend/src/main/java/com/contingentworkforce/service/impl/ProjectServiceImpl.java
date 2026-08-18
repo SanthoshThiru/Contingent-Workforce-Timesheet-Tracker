@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;

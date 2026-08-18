@@ -227,7 +227,7 @@ export const TimesheetsList = () => {
         const s = (row.status || '').toUpperCase();
         const isPending = s === 'SUBMITTED' || s === 'REVIEW REQUIRED' || s === 'UNDER_REVIEW';
         const isDraft = s === 'DRAFT';
-        const canManage = role === 'MANAGER' || role === 'ADMIN';
+        const canManage = role === 'VENDOR' || role === 'ADMIN';
 
         return (
           <div className="flex items-center space-x-1.5">

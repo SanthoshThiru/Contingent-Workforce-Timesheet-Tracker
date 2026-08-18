@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class ReportServiceImpl implements ReportService {
 
     private final VendorRepository vendorRepository;

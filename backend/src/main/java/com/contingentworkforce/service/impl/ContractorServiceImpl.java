@@ -32,6 +32,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class ContractorServiceImpl implements ContractorService {
 
     private final ContractorRepository contractorRepository;

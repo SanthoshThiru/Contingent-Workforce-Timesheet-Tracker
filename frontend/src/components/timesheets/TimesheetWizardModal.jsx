@@ -208,7 +208,7 @@ export const TimesheetWizardModal = ({ isOpen, onClose, onSuccess }) => {
 
                 const payload = {
                     projectId: selectedProjectId,
-                    milestoneId: day.milestoneId || selectedMilestoneId || null,
+                    milestoneId: (day.milestoneId || selectedMilestoneId) ? (day.milestoneId || selectedMilestoneId) : null,
                     workDate: day.date,
                     startTime: startTime,
                     endTime: endTime,

@@ -30,6 +30,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class VendorServiceImpl implements VendorService {
 
     private final VendorRepository vendorRepository;

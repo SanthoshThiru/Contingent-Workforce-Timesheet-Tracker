@@ -1,12 +1,17 @@
 package com.contingentworkforce;
 
+import com.contingentworkforce.dto.contractor.ContractorResponse;
 import com.contingentworkforce.dto.timesheet.TimesheetRequest;
 import com.contingentworkforce.dto.timesheet.TimesheetResponse;
 import com.contingentworkforce.entity.*;
 import com.contingentworkforce.enums.*;
 import com.contingentworkforce.exception.BadRequestException;
 import com.contingentworkforce.repository.*;
+import com.contingentworkforce.service.ApprovalService;
+import com.contingentworkforce.service.NotificationService;
+import com.contingentworkforce.service.impl.ContractorServiceImpl;
 import com.contingentworkforce.service.impl.TimesheetServiceImpl;
+import com.contingentworkforce.service.validation.TimesheetValidationEngine;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,6 +31,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@SuppressWarnings("null")
 class TimesheetCalculationTests {
 
     @Mock
@@ -35,7 +41,19 @@ class TimesheetCalculationTests {
     @Mock
     private ProjectRepository projectRepository;
     @Mock
-    private com.contingentworkforce.service.impl.ContractorServiceImpl contractorService;
+    private MilestoneRepository milestoneRepository;
+    @Mock
+    private UserRepository userRepository;
+    @Mock
+    private VendorRepository vendorRepository;
+    @Mock
+    private ContractorServiceImpl contractorService;
+    @Mock
+    private ApprovalService approvalService;
+    @Mock
+    private NotificationService notificationService;
+    @Mock
+    private TimesheetValidationEngine validationEngine;
 
     @InjectMocks
     private TimesheetServiceImpl timesheetService;
@@ -82,7 +100,7 @@ class TimesheetCalculationTests {
                 .build();
 
         org.mockito.Mockito.lenient().when(contractorService.mapToContractorResponse(any()))
-                .thenReturn(com.contingentworkforce.dto.contractor.ContractorResponse.builder().id(contractorId).build());
+                .thenReturn(ContractorResponse.builder().id(contractorId).build());
     }
 
     @Test
